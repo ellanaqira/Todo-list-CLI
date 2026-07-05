@@ -1,6 +1,3 @@
-
-// CREATE A KEYWORD TO SHOW TASK
-
 #include <stdio.h>
 #include <string.h>
 
@@ -8,7 +5,7 @@
 #define MAXCHAR 1000
 
 // function declarartion
-void add(char *argv[]);
+void add_task(char *argv[]);
 void prtlargv(int argc, char *argv[]);
 int strcmpr(char str1[], char str2[]);
 
@@ -20,14 +17,19 @@ typedef struct {
 	char date[MAXCHAR];
 } Task;
 
+Task add;
 
 // MAIN
 int main(int argc, char *argv[]) {
-	int compare = 0;
-	if ((compare = strcmpr(argv[1], "-add")) == 1) {
-		add(argv);
+	if (strcmpr(argv[1], "add") == 1) {
+		if (argc < 5) {
+            printf("Error: add requires <task> <time> <date>\n");
+            return 1;
+        }
+		add_task(argv);
 		prtlargv(argc, argv);
 	}
+
 	else {
 		printf("keyword '%s' not included\n", argv[1]);
 		prtlargv(argc, argv);
@@ -36,22 +38,22 @@ int main(int argc, char *argv[]) {
 }
 
 
-void prtlargv(int argc, char *argv[]) {
-	for (int i=0; i<argc; i+=1) {
-		printf("argv[%d] = %s\n", i, argv[i]);
-	}
-}
-
-
-void add(char *argv[]) {
-	Task add;
-	strcpy(add.todo, argv[1]);
-	strcpy(add.time, argv[2]);
-	strcpy(add.date, argv[3]);
+void add_task(char *argv[]) {
+	/*
+	Add task data to Task struct
+	*/
+	strcpy(add.todo, argv[2]);
+	strcpy(add.time, argv[3]);
+	strcpy(add.date, argv[4]);
 }
 
 
 int strcmpr(char str1[], char str2[]) {
+	/*
+	Compare two string to check if it the same,
+	return 1 if two string are the same and
+	return 0 if otherwise.
+	*/
 	int i = 0;
 
 	while (str1[i] == str2[i]) {
@@ -61,4 +63,14 @@ int strcmpr(char str1[], char str2[]) {
 		i+=1;
 	}
 	return 0;
+}
+
+
+void prtlargv(int argc, char *argv[]) {
+	/*
+	Print list of argv line by line
+	*/
+	for (int i=0; i<argc; i+=1) {
+		printf("argv[%d] = %s\n", i, argv[i]);
+	}
 }
