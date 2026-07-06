@@ -4,29 +4,32 @@
 // constant
 #define MAXCHAR 1000
 
-// function declarartion
-void add_task(char *argv[]);
-void prtlargv(int argc, char *argv[]);
-int strcmpr(char str1[], char str2[]);
 
-
-// struct
+// Task structure
 typedef struct {
 	char todo[MAXCHAR];
 	char time[MAXCHAR];
 	char date[MAXCHAR];
 } Task;
 
-Task add;
+
+// function declarartion
+void add_task(Task *add, char *todo, char *time, char *date);
+void prtlargv(int argc, char *argv[]);
+int strcmpr(char str1[], char str2[]);
+
 
 // MAIN
 int main(int argc, char *argv[]) {
+	// Task container
+	Task add;
+
 	if (strcmpr(argv[1], "add") == 1) {
 		if (argc < 5) {
             printf("Error: add requires <task> <time> <date>\n");
             return 1;
         }
-		add_task(argv);
+		add_task(&add, argv[2], argv[3], argv[4]);
 		prtlargv(argc, argv);
 	}
 
@@ -38,13 +41,13 @@ int main(int argc, char *argv[]) {
 }
 
 
-void add_task(char *argv[]) {
+void add_task(Task *add, char *todo, char *time, char *date) {
 	/*
 	Add task data to Task struct
 	*/
-	strcpy(add.todo, argv[2]);
-	strcpy(add.time, argv[3]);
-	strcpy(add.date, argv[4]);
+	strcpy(add->todo, todo);
+	strcpy(add->time, time);
+	strcpy(add->date, date);
 }
 
 
