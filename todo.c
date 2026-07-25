@@ -46,6 +46,11 @@ int main(int argc, char *argv[]) {
 	else if (str_compare(argv[1], "show") == 1) {
 		read_data(to_do, "file.bin");
 	}
+
+	else {
+		printf("todo: '%s' is not a todo command.\n", argv[1]);
+		return 1;
+	}
 }
 
 
