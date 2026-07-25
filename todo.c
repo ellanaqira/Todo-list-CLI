@@ -11,7 +11,7 @@ typedef struct {
 	char todo[MAXCHAR];
 	float time;
 	int date;
-	int moth;
+	int month;
 	int years;
 	int status;
 	int mark;
@@ -35,12 +35,16 @@ int main(int argc, char *argv[]) {
 	if (str_compare(argv[1], "add") == 1) {
 		if (argc == 9) {
 			store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
-			write_data(to_do, "todo.bin");
+			write_data(to_do, "file.bin");
 		}
 		else {
 			printf("'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
 			return 1;
 		}
+	}
+
+	else if (str_compare(argv[1], "show") == 1) {
+		read_data(to_do, "file.bin");
 	}
 }
 
@@ -68,11 +72,27 @@ int write_data(Task data, char file_name[]) {
     return 0;
 }
 
+int read_data(Task data, char file_name[]) {
+    FILE *file = fopen(file_name, "rb");
+    if (file == NULL) {
+        printf("Failed to open file\n");
+        return 1;
+    }
+    
+    while(fread(&data, sizeof(data), 1, file) == 1) {
+        printf("%s | time: %.2f | %d-%d-%d | urgency: %d | stat: %d\n",
+        data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+    }
+
+    fclose(file);
+    return 0;
+}
+
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]) {
 	strcpy(data->todo, argv2);
 	data->time = atof(argv3);
 	data->date = atoi(argv4);
-	data->moth = atoi(argv5);
+	data->month = atoi(argv5);
 	data->years = atoi(argv6);
 	data->status = atoi(argv7);
 	data->mark = atoi(argv8);
