@@ -35,9 +35,11 @@ int main(int argc, char *argv[]) {
 	if (str_compare(argv[1], "add") == 1) {
 		if (argc == 9) {
 			store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
+			write_data(to_do, "todo.bin");
 		}
 		else {
 			printf("'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
+			return 1;
 		}
 	}
 }
