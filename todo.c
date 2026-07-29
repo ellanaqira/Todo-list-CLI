@@ -60,7 +60,13 @@ int main(int argc, char *argv[]) {
         }
 
         else if (str_compare(argv[1], "show") == 1) {
-            read_data(to_do, "file.bin");
+            if (argc == 2) {
+                read_data(to_do, "file.bin");
+            }
+            else {
+                printf("todo: '%s' is not a todo command.\n", argv[2]);
+                return 1;            
+            }
         }
 
         else {
