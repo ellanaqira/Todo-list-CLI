@@ -31,38 +31,44 @@ int str_compare(char str1[], char str2[]);
 
 // MAIN
 int main(int argc, char *argv[]) {
-	Task to_do;
+    if (argc == 1) {
+        print_help();
+    }
+    
+    else {
+        Task to_do;
 
-    if (str_compare(argv[1], "help") == 1) {
-        if (argc == 2) {
-            print_help();
+        if (str_compare(argv[1], "help") == 1) {
+            if (argc == 2) {
+                print_help();
+            }
+            else {
+                printf("todo: '%s' is not a todo command.\n", argv[2]);
+                return 1;            
+            }
         }
+
+        else if (str_compare(argv[1], "add") == 1) {
+            if (argc == 9) {
+                store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
+                write_data(to_do, "file.bin");
+            }
+            else {
+                printf("'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
+                return 1;
+            }
+        }
+
+        else if (str_compare(argv[1], "show") == 1) {
+            read_data(to_do, "file.bin");
+        }
+
         else {
-            printf("todo: '%s' is not a todo command.\n", argv[2]);
-		    return 1;            
+            printf("todo: '%s' is not a todo command.\n", argv[1]);
+            return 1;
         }
     }
-
-	else if (str_compare(argv[1], "add") == 1) {
-		if (argc == 9) {
-			store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
-			write_data(to_do, "file.bin");
-		}
-		else {
-			printf("'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
-			return 1;
-		}
-	}
-
-	else if (str_compare(argv[1], "show") == 1) {
-		read_data(to_do, "file.bin");
-	}
-
-	else {
-		printf("todo: '%s' is not a todo command.\n", argv[1]);
-		return 1;
-	}
-
+    
     return 0;
 }
 
