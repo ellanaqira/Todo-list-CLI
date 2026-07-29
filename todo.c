@@ -34,7 +34,13 @@ int main(int argc, char *argv[]) {
 	Task to_do;
 
     if (str_compare(argv[1], "help") == 1) {
-        print_help();
+        if (argc == 2) {
+            print_help();
+        }
+        else {
+            printf("todo: '%s' is not a todo command.\n", argv[2]);
+		    return 1;            
+        }
     }
 
 	else if (str_compare(argv[1], "add") == 1) {
