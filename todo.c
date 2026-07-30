@@ -22,10 +22,12 @@ typedef struct {
 // Function Declaration
 int write_data(Task data, char file_name[]);
 int read_data(Task data, char file_name[]);
+int longest_str(Task data, char file_name[]);
 void print_help(void);
 // Helper Function
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]);
 int str_compare(char str1[], char str2[]);
+void loopchar(int n, char c);
 
 
 
@@ -89,6 +91,35 @@ void print_help(void){
 }
 
 
+void loopchar(int n, char c) {
+    for(int i=0; i<n; i+=1) {
+        putchar(c);
+    }
+}
+
+
+int longest_str(Task data, char file_name[]) {
+    FILE *file = fopen(file_name, "rb");
+
+    if (file == NULL) {
+        printf("Failed to open file\n");
+        return 1;
+    }
+
+    int templen = 0;
+    while(fread(&data, sizeof(data), 1, file) == 1) {
+        size_t textlen = strlen(data.todo);
+        if (templen < textlen) {
+            templen = textlen;
+        }
+        else {
+            templen;
+        }
+    }
+    return templen;
+}
+
+
 int write_data(Task data, char file_name[]) {
     FILE *file = fopen(file_name, "ab");
     if (file == NULL) {
@@ -110,6 +141,7 @@ int write_data(Task data, char file_name[]) {
     return 0;
 }
 
+
 int read_data(Task data, char file_name[]) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
@@ -117,14 +149,19 @@ int read_data(Task data, char file_name[]) {
         return 1;
     }
     
+    int tasklen = longest_str(data, file_name);
+
     while(fread(&data, sizeof(data), 1, file) == 1) {
-        printf("%s | time: %.2f | %d-%d-%d | urgency: %d | stat: %d\n",
-        data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+        printf("%s ", data.todo);
+        loopchar((tasklen-strlen(data.todo)), ' ');
+        printf("| time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
+        data.time, data.date, data.month, data.years, data.status, data.mark);
     }
 
     fclose(file);
     return 0;
 }
+
 
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]) {
 	strcpy(data->todo, argv2);
@@ -135,6 +172,7 @@ void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char 
 	data->status = atoi(argv7);
 	data->mark = atoi(argv8);
 }
+
 
 int str_compare(char str1[], char str2[]) {
     int i = 0;
