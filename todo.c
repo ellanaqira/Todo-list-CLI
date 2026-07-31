@@ -151,11 +151,18 @@ int read_data(Task data, char file_name[]) {
     
     int tasklen = longest_str(data, file_name);
 
-    while(fread(&data, sizeof(data), 1, file) == 1) {
-        printf("%s ", data.todo);
-        loopchar((tasklen-strlen(data.todo)), ' ');
-        printf("| time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
-        data.time, data.date, data.month, data.years, data.status, data.mark);
+    int temp_num = 0;
+
+    for (temp_num=3; temp_num >= 0; temp_num-=1) {
+        while(fread(&data, sizeof(data), 1, file) == 1) {
+            if (data.status == temp_num) {
+                printf("%s ", data.todo);
+                loopchar((tasklen-strlen(data.todo)), ' ');
+                printf("| time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
+                data.time, data.date, data.month, data.years, data.status, data.mark);
+            }
+        }
+        rewind(file);
     }
 
     fclose(file);
