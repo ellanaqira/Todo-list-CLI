@@ -98,9 +98,10 @@ void print_help(void){
     printf("[ Help ]\n");
     printf("Command:\n");
     printf("    add     to store task and write it to binary file\n");
-    printf("            'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
+    printf("            'add' <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
     printf("            <status> : 0 = not at all urgent, 1 = not urgent, 2 = quite urgent, 3 = urgent\n");
     printf("            <mark>   : 0 = not finish, 1 = finish\n");
+    printf("    look    'look' <task>\n");
     printf("    show    print out stored task\n");
 }
 
