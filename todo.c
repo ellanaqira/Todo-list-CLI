@@ -22,9 +22,10 @@ typedef struct {
 // Function Declaration
 int write_data(Task data, char file_name[]);
 int read_data(Task data, char file_name[]);
-int longest_str(Task data, char file_name[]);
+int look(Task data, char file_name[], char argv2[]);
 void print_help(void);
 // Helper Function
+int longest_str(Task data, char file_name[]);
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]);
 int str_compare(char str1[], char str2[]);
 void loopchar(int n, char c);
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
                 write_data(to_do, "file.bin");
             }
             else {
-                printf("'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
+                printf("todo: 'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
                 return 1;
             }
         }
@@ -67,6 +68,16 @@ int main(int argc, char *argv[]) {
             }
             else {
                 printf("todo: '%s' is not a todo command.\n", argv[2]);
+                return 1;            
+            }
+        }
+
+        else if (str_compare(argv[1], "look") == 1) {
+            if (argc == 3) {
+                look(to_do, "file.bin", argv[2]);
+            }
+            else {
+                printf("todo: 'look' must be include <task>\n");
                 return 1;            
             }
         }
@@ -169,6 +180,24 @@ int read_data(Task data, char file_name[]) {
     }
 
     fclose(file);
+    return 0;
+}
+
+ 
+int look(Task data, char file_name[], char argv2[]) {
+    FILE *file = fopen(file_name, "rb");
+    if (file == NULL) {
+        printf("Failed adding data to file\n");
+        return 1;
+    }
+
+    while(fread(&data, sizeof(data), 1, file) == 1) {
+        if ((str_compare(argv2, data.todo)) == 1) {
+            printf("%s | time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
+            data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+        }
+    }
+
     return 0;
 }
 
