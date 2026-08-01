@@ -74,7 +74,10 @@ int main(int argc, char *argv[]) {
 
         else if (str_compare(argv[1], "look") == 1) {
             if (argc == 3) {
-                look(to_do, "file.bin", argv[2]);
+                if (look(to_do, "file.bin", argv[2]) == 1) {
+                    printf("todo: cant find task '%s'\n", argv[2]);
+                    return 1;
+                }
             }
             else {
                 printf("todo: 'look' must be include <task>\n");
@@ -152,7 +155,6 @@ int write_data(Task data, char file_name[]) {
     }
     fclose(file);
 
-    printf("Successfully add data to file\n");
     return 0;
 }
 
@@ -173,7 +175,7 @@ int read_data(Task data, char file_name[]) {
             if (data.status == temp_num) {
                 printf("%s ", data.todo);
                 loopchar((tasklen-strlen(data.todo)), ' ');
-                printf("| time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
+                printf("| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d\n",
                 data.time, data.date, data.month, data.years, data.status, data.mark);
             }
         }
@@ -192,11 +194,17 @@ int look(Task data, char file_name[], char argv2[]) {
         return 1;
     }
 
+    int find = 0;
     while(fread(&data, sizeof(data), 1, file) == 1) {
         if ((str_compare(argv2, data.todo)) == 1) {
             printf("%s | time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
             data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+            find = 1;
         }
+    }
+    
+    if (find == 0) {
+        return 1;
     }
 
     return 0;
