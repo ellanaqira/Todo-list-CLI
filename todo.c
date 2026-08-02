@@ -27,7 +27,6 @@ void print_help(void);
 // Helper Function
 int longest_str(Task data, char file_name[]);
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]);
-int str_compare(char str1[], char str2[]);
 void loopchar(int n, char c);
 
 
@@ -41,7 +40,7 @@ int main(int argc, char *argv[]) {
     else {
         Task to_do;
 
-        if (str_compare(argv[1], "help") == 1) {
+        if (strcmp(argv[1], "help") == 0) {
             if (argc == 2) {
                 print_help();
             }
@@ -51,7 +50,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        else if (str_compare(argv[1], "add") == 1) {
+        else if (strcmp(argv[1], "add") == 0) {
             if (argc == 9) {
                 store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
                 write_data(to_do, "file.bin");
@@ -62,7 +61,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        else if (str_compare(argv[1], "show") == 1) {
+        else if (strcmp(argv[1], "show") == 0) {
             if (argc == 2) {
                 read_data(to_do, "file.bin");
             }
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        else if (str_compare(argv[1], "look") == 1) {
+        else if (strcmp(argv[1], "look") == 0) {
             if (argc == 3) {
                 if (look(to_do, "file.bin", argv[2]) == 1) {
                     printf("todo: cant find task '%s'\n", argv[2]);
@@ -179,7 +178,7 @@ int read_data(Task data, char file_name[]) {
                 data.time, data.date, data.month, data.years, data.status, data.mark);
             }
         }
-        rewind(file);
+
     }
 
     fclose(file);
@@ -196,7 +195,7 @@ int look(Task data, char file_name[], char argv2[]) {
 
     int find = 0;
     while(fread(&data, sizeof(data), 1, file) == 1) {
-        if ((str_compare(argv2, data.todo)) == 1) {
+        if ((strcmp(argv2, data.todo)) == 0) {
             printf("%s | time: %5.2f | %d-%d-%d | urgency: %d | stat: %d\n",
             data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
             find = 1;
@@ -221,15 +220,3 @@ void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char 
 	data->mark = atoi(argv8);
 }
 
-
-int str_compare(char str1[], char str2[]) {
-    int i = 0;
-
-    while (str1[i] == str2[i]) {
-        if (str1[i] == '\0' && str2[i] == '\0') {
-            return 1;
-        }
-        ++i;
-    }
-    return 0;
-}
