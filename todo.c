@@ -178,7 +178,6 @@ int read_data(Task data, char file_name[]) {
                 data.time, data.date, data.month, data.years, data.status, data.mark);
             }
         }
-
     }
 
     fclose(file);
@@ -211,7 +210,8 @@ int look(Task data, char file_name[], char argv2[]) {
 
 
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]) {
-	strcpy(data->todo, argv2);
+	strncpy(data->todo, argv2, MAXCHAR-1);
+    data->todo[MAXCHAR-1] = '\0'; // Ensure null termination
 	data->time = atof(argv3);
 	data->date = atoi(argv4);
 	data->month = atoi(argv5);
