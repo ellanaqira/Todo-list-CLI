@@ -4,6 +4,12 @@
 
 // constant
 #define MAXCHAR 256
+#define REQUIRED_HELP_ARGC 2
+#define REQUIRED_ADD_ARGC 9
+#define REQUIRED_SHOW_ARGC 2
+#define REQUIRED_LOOK_ARGC 3
+#define DB_FILE "todolist.bin"
+
 
 
 // Task structure
@@ -41,7 +47,7 @@ int main(int argc, char *argv[]) {
         Task to_do;
 
         if (strcmp(argv[1], "help") == 0) {
-            if (argc == 2) {
+            if (argc == REQUIRED_HELP_ARGC) {
                 print_help();
             }
             else {
@@ -51,9 +57,9 @@ int main(int argc, char *argv[]) {
         }
 
         else if (strcmp(argv[1], "add") == 0) {
-            if (argc == 9) {
+            if (argc == REQUIRED_ADD_ARGC) {
                 store_to_struct(&to_do, argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
-                write_data(to_do, "file.bin");
+                write_data(to_do, DB_FILE);
             }
             else {
                 printf("todo: 'add' must be include <task> <time(hh.mm)> <date> <month> <years> <status> <mark>\n");
@@ -62,8 +68,8 @@ int main(int argc, char *argv[]) {
         }
 
         else if (strcmp(argv[1], "show") == 0) {
-            if (argc == 2) {
-                read_data(to_do, "file.bin");
+            if (argc == REQUIRED_SHOW_ARGC) {
+                read_data(to_do, DB_FILE);
             }
             else {
                 printf("todo: '%s' is not a todo command.\n", argv[2]);
@@ -72,8 +78,8 @@ int main(int argc, char *argv[]) {
         }
 
         else if (strcmp(argv[1], "look") == 0) {
-            if (argc == 3) {
-                if (look(to_do, "file.bin", argv[2]) == 1) {
+            if (argc == REQUIRED_LOOK_ARGC) {
+                if (look(to_do, DB_FILE, argv[2]) == 1) {
                     printf("todo: cant find task '%s'\n", argv[2]);
                     return 1;
                 }
