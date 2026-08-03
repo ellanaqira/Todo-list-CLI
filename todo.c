@@ -29,6 +29,7 @@ typedef struct {
 int write_data(Task data, char file_name[]);
 int read_data(Task data, char file_name[]);
 int look_task(Task data, char file_name[], char argv2[]);
+int get_numof_task(Task data, char file_name[]);
 void print_help(void);
 // Helper Function
 int longest_str(Task data, char file_name[]);
@@ -212,6 +213,18 @@ int look_task(Task data, char file_name[], char argv2[]) {
     }
 
     return 0;
+}
+
+int get_numof_task(Task data, char file_name[]) {
+    FILE *file = fopen(file_name, "rb");
+    if (file == NULL) {
+        return 1;
+    }
+
+    fseek(file, 0, SEEK_END);
+    int numof_task = ftell(file) / sizeof(data);
+
+    return numof_task;
 }
 
 
