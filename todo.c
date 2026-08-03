@@ -28,7 +28,7 @@ typedef struct {
 // Function Declaration
 int write_data(Task data, char file_name[]);
 int read_data(Task data, char file_name[]);
-int look(Task data, char file_name[], char argv2[]);
+int look_task(Task data, char file_name[], char argv2[]);
 void print_help(void);
 // Helper Function
 int longest_str(Task data, char file_name[]);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
         else if (strcmp(argv[1], "look") == 0) {
             if (argc == REQUIRED_LOOK_ARGC) {
-                if (look(to_do, DB_FILE, argv[2]) == 1) {
+                if (look_task(to_do, DB_FILE, argv[2]) == 1) {
                     printf("todo: cant find task '%s'\n", argv[2]);
                     return 1;
                 }
@@ -191,7 +191,7 @@ int read_data(Task data, char file_name[]) {
 }
 
  
-int look(Task data, char file_name[], char argv2[]) {
+int look_task(Task data, char file_name[], char argv2[]) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
         printf("Failed adding data to file\n");
