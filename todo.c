@@ -195,7 +195,7 @@ int read_data(Task data, char file_name[]) {
 int look_task(Task data, char file_name[], char argv2[]) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
-        printf("Failed adding data to file\n");
+        printf("Failed to open file\n");
         return 1;
     }
 
