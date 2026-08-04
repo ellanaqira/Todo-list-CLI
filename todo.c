@@ -166,26 +166,79 @@ int write_data(Task data, char file_name[]) {
 
 
 int read_data(Task data, char file_name[]) {
+
+// Get number of task by the urgent status ==========|
+
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
         printf("Failed to open file\n");
         return 1;
     }
     
-    int tasklen = longest_str(data, file_name);
+    int numof_urgent3 = 0;
+    int numof_urgent2 = 0;
+    int numof_urgent1 = 0;
+    int numof_urgent0 = 0;
 
-    int temp_num = 0;
+    while(fread(&data, sizeof(data), 1, file) == 1) {
+        if (data.status == 3) {
+            numof_urgent3 += 1;
+        }
+        else if (data.status == 2) {
+            numof_urgent2 += 1;
+        }
+        else if (data.status == 1) {
+            numof_urgent1 += 1;
+        }
+        else if (data.status == 0) {
+            numof_urgent0 += 1;
+        }
+    }
+    // Reset the pointer file
+    rewind(file); 
 
-    for (temp_num=3; temp_num >= 0; temp_num-=1) {
-        while(fread(&data, sizeof(data), 1, file) == 1) {
-            if (data.status == temp_num) {
-                printf("%s ", data.todo);
-                loopchar((tasklen-strlen(data.todo)), ' ');
-                printf("| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d\n",
-                data.time, data.date, data.month, data.years, data.status, data.mark);
+// Allocate memory for the array of string pointers ==========|
+
+    // Dynamic Array of string to store task by the urgency
+    char **urgent3_task = (char **)malloc(numof_urgent3 * sizeof(char *));
+    if (urgent3_task== NULL) {
+        return 1;
+    }
+
+    // Temporary Number
+    int tempnum_urgent3 = 0;
+
+    while(fread(&data, sizeof(data), 1, file) == 1) {
+        // Strore task to urgent3_task if data.status is equal to 3
+        if (data.status == 3) {
+            // Combine formated string
+            char buffer[1000];
+            snprintf(buffer, sizeof(buffer), "%s | time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+
+            urgent3_task[tempnum_urgent3] = (char *)malloc(strlen(buffer) * sizeof(char));
+            if (urgent3_task[tempnum_urgent3] == NULL) {
+                return 1;
+            }
+
+            strcpy(urgent3_task[tempnum_urgent3], buffer);
+
+            if (tempnum_urgent3 < numof_urgent3) {
+                tempnum_urgent3 += 1;
             }
         }
     }
+
+
+    for(int i = 0; i < numof_urgent3; i+=1) {
+        printf("%s\n", urgent3_task[i]);
+    }
+
+    // 4. Free the allocated memory (reverse order)
+    for (int i = 0; i < numof_urgent3; i+=1) {
+        free(urgent3_task[i]); // Free each string
+    }
+
+    free(urgent3_task);
 
     fclose(file);
     return 0;
