@@ -166,15 +166,13 @@ int write_data(Task data, char file_name[]) {
 
 
 int read_data(Task data, char file_name[]) {
-
-// Get number of task by the urgent status ==========|
-
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
         printf("Failed to open file\n");
         return 1;
     }
-    
+
+    // Get the number of task by the urgency
     int numof_urgent3 = 0;
     int numof_urgent2 = 0;
     int numof_urgent1 = 0;
@@ -197,9 +195,9 @@ int read_data(Task data, char file_name[]) {
     // Reset the pointer file
     rewind(file); 
 
-// Allocate memory for the array of string pointers ==========|
 
     // Dynamic Array of string to store task by the urgency
+    // Allocate memory for the array of string pointers
     char **urgent3_task = (char **)malloc(numof_urgent3 * sizeof(char *));
     if (urgent3_task== NULL) {
         return 1;
@@ -215,11 +213,13 @@ int read_data(Task data, char file_name[]) {
             char buffer[1000];
             snprintf(buffer, sizeof(buffer), "%s | time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
 
+            //  Allocate memory for each individual string
             urgent3_task[tempnum_urgent3] = (char *)malloc(strlen(buffer) * sizeof(char));
             if (urgent3_task[tempnum_urgent3] == NULL) {
                 return 1;
             }
 
+            // Copy string to dynamic array
             strcpy(urgent3_task[tempnum_urgent3], buffer);
 
             if (tempnum_urgent3 < numof_urgent3) {
@@ -228,19 +228,19 @@ int read_data(Task data, char file_name[]) {
         }
     }
 
-
+    // Print out task
     for(int i = 0; i < numof_urgent3; i+=1) {
         printf("%s\n", urgent3_task[i]);
     }
 
-    // 4. Free the allocated memory (reverse order)
+    // Free the allocated memory (reverse order)
     for (int i = 0; i < numof_urgent3; i+=1) {
         free(urgent3_task[i]); // Free each string
     }
-
     free(urgent3_task);
 
     fclose(file);
+
     return 0;
 }
 
