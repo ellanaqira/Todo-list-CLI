@@ -34,7 +34,7 @@ void print_help(void);
 // Helper Function
 int longest_str(Task data, char file_name[]);
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]);
-void loopchar(int n, char c);
+void loopchar(int n, char c, char s[]);
 
 
 
@@ -115,10 +115,12 @@ void print_help(void){
 }
 
 
-void loopchar(int n, char c) {
-    for(int i=0; i<n; i+=1) {
-        putchar(c);
+void loopchar(int n, char c, char s[]) {
+    int i = 0;
+    for(i=0; i<n; i+=1) {
+        s[i] = c;
     }
+    s[i++] = '\0';
 }
 
 
@@ -203,6 +205,9 @@ int read_data(Task data, char file_name[]) {
         return 1;
     }
 
+    // Get the longest string of task
+    int longest_task = longest_str(data, file_name);
+
     // Temporary Number
     int tempnum_urgent3 = 0;
 
@@ -210,8 +215,10 @@ int read_data(Task data, char file_name[]) {
         // Strore task to urgent3_task if data.status is equal to 3
         if (data.status == 3) {
             // Combine formated string
+            char str_of_space[256];
+            loopchar((longest_task - strlen(data.todo)), ' ', str_of_space);
             char buffer[1000];
-            snprintf(buffer, sizeof(buffer), "%s | time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, data.time, data.date, data.month, data.years, data.status, data.mark);
+            snprintf(buffer, sizeof(buffer), "%s %s| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, str_of_space, data.time, data.date, data.month, data.years, data.status, data.mark);
 
             //  Allocate memory for each individual string
             urgent3_task[tempnum_urgent3] = (char *)malloc(strlen(buffer) * sizeof(char));
@@ -267,6 +274,7 @@ int look_task(Task data, char file_name[], char argv2[]) {
 
     return 0;
 }
+
 
 int get_numof_task(Task data, char file_name[]) {
     FILE *file = fopen(file_name, "rb");
