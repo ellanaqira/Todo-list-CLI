@@ -115,6 +115,7 @@ void print_help(void){
 }
 
 
+
 void loopchar(int n, char c, char s[]) {
     int i = 0;
     for(i=0; i<n; i+=1) {
@@ -122,6 +123,7 @@ void loopchar(int n, char c, char s[]) {
     }
     s[i++] = '\0';
 }
+
 
 
 int longest_str(Task data, char file_name[]) {
@@ -146,6 +148,7 @@ int longest_str(Task data, char file_name[]) {
 }
 
 
+
 int write_data(Task data, char file_name[]) {
     FILE *file = fopen(file_name, "ab");
     if (file == NULL) {
@@ -165,6 +168,7 @@ int write_data(Task data, char file_name[]) {
 
     return 0;
 }
+
 
 
 int read_data(Task data, char file_name[]) {
@@ -205,11 +209,31 @@ int read_data(Task data, char file_name[]) {
         return 1;
     }
 
+    char **urgent2_task = (char **)malloc(numof_urgent2 * sizeof(char *));
+    if (urgent2_task== NULL) {
+        return 1;
+    }
+
+    char **urgent1_task = (char **)malloc(numof_urgent1 * sizeof(char *));
+    if (urgent1_task== NULL) {
+        return 1;
+    }
+
+    char **urgent0_task = (char **)malloc(numof_urgent0 * sizeof(char *));
+    if (urgent0_task== NULL) {
+        return 1;
+    }
+
+
     // Get the longest string of task
     int longest_task = longest_str(data, file_name);
 
     // Temporary Number
     int tempnum_urgent3 = 0;
+    int tempnum_urgent2 = 0;
+    int tempnum_urgent1 = 0;
+    int tempnum_urgent0 = 0;
+
 
     while(fread(&data, sizeof(data), 1, file) == 1) {
         // Strore task to urgent3_task if data.status is equal to 3
@@ -235,12 +259,100 @@ int read_data(Task data, char file_name[]) {
                 tempnum_urgent3 += 1;
             }
         }
+
+
+        else if (data.status == 2) {
+        // Combine formated string
+            // Store string of space    
+            char str_of_space[256];
+            loopchar((longest_task - strlen(data.todo)), ' ', str_of_space);
+
+            char buffer[1000];
+            snprintf(buffer, sizeof(buffer), "%s %s| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, str_of_space, data.time, data.date, data.month, data.years, data.status, data.mark);
+
+            //  Allocate memory for each individual string
+            urgent2_task[tempnum_urgent2] = (char *)malloc(strlen(buffer) * sizeof(char));
+            if (urgent2_task[tempnum_urgent2] == NULL) {
+                return 1;
+            }
+
+            // Copy string to dynamic array
+            strcpy(urgent2_task[tempnum_urgent2], buffer);
+
+            if (tempnum_urgent2 < numof_urgent2) {
+                tempnum_urgent2 += 1;
+            }
+        }
+
+
+        else if (data.status == 1) {
+        // Combine formated string
+            // Store string of space    
+            char str_of_space[256];
+            loopchar((longest_task - strlen(data.todo)), ' ', str_of_space);
+
+            char buffer[1000];
+            snprintf(buffer, sizeof(buffer), "%s %s| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, str_of_space, data.time, data.date, data.month, data.years, data.status, data.mark);
+
+            //  Allocate memory for each individual string
+            urgent1_task[tempnum_urgent1] = (char *)malloc(strlen(buffer) * sizeof(char));
+            if (urgent1_task[tempnum_urgent1] == NULL) {
+                return 1;
+            }
+
+            // Copy string to dynamic array
+            strcpy(urgent1_task[tempnum_urgent1], buffer);
+
+            if (tempnum_urgent1 < numof_urgent1) {
+                tempnum_urgent1 += 1;
+            }
+        }
+
+
+        else if (data.status == 0) {
+        // Combine formated string
+            // Store string of space    
+            char str_of_space[256];
+            loopchar((longest_task - strlen(data.todo)), ' ', str_of_space);
+
+            char buffer[1000];
+            snprintf(buffer, sizeof(buffer), "%s %s| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, str_of_space, data.time, data.date, data.month, data.years, data.status, data.mark);
+
+            //  Allocate memory for each individual string
+            urgent0_task[tempnum_urgent0] = (char *)malloc(strlen(buffer) * sizeof(char));
+            if (urgent0_task[tempnum_urgent0] == NULL) {
+                return 1;
+            }
+
+            // Copy string to dynamic array
+            strcpy(urgent0_task[tempnum_urgent0], buffer);
+
+            if (tempnum_urgent0 < numof_urgent0) {
+                tempnum_urgent0 += 1;
+            }
+        }
     }
+
+
 
     // Print out task
     for(int i = 0; i < numof_urgent3; i+=1) {
         printf("%s\n", urgent3_task[i]);
     }
+
+    for(int i = 0; i < numof_urgent2; i+=1) {
+        printf("%s\n", urgent2_task[i]);
+    }
+
+    for(int i = 0; i < numof_urgent1; i+=1) {
+        printf("%s\n", urgent1_task[i]);
+    }
+
+    for(int i = 0; i < numof_urgent0; i+=1) {
+        printf("%s\n", urgent0_task[i]);
+    }
+
+
 
     // Free the allocated memory (reverse order)
     for (int i = 0; i < numof_urgent3; i+=1) {
@@ -248,12 +360,29 @@ int read_data(Task data, char file_name[]) {
     }
     free(urgent3_task);
 
+    for (int i = 0; i < numof_urgent2; i+=1) {
+        free(urgent2_task[i]); // Free each string
+    }
+    free(urgent2_task);
+
+    for (int i = 0; i < numof_urgent1; i+=1) {
+        free(urgent1_task[i]); // Free each string
+    }
+    free(urgent1_task);
+
+    for (int i = 0; i < numof_urgent0; i+=1) {
+        free(urgent0_task[i]); // Free each string
+    }
+    free(urgent0_task);
+
+
     fclose(file);
 
     return 0;
 }
 
- 
+
+
 int look_task(Task data, char file_name[], char argv2[]) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
@@ -278,6 +407,7 @@ int look_task(Task data, char file_name[], char argv2[]) {
 }
 
 
+
 int get_numof_task(Task data, char file_name[]) {
     FILE *file = fopen(file_name, "rb");
     if (file == NULL) {
@@ -289,6 +419,7 @@ int get_numof_task(Task data, char file_name[]) {
 
     return numof_task;
 }
+
 
 
 void store_to_struct(Task *data, char argv2[], char argv3[], char argv4[], char argv5[], char argv6[], char argv7[], char argv8[]) {
