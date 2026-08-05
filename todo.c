@@ -214,9 +214,11 @@ int read_data(Task data, char file_name[]) {
     while(fread(&data, sizeof(data), 1, file) == 1) {
         // Strore task to urgent3_task if data.status is equal to 3
         if (data.status == 3) {
-            // Combine formated string
+        // Combine formated string
+            // Store string of space    
             char str_of_space[256];
             loopchar((longest_task - strlen(data.todo)), ' ', str_of_space);
+
             char buffer[1000];
             snprintf(buffer, sizeof(buffer), "%s %s| time: %5.2f | %2d-%2d-%4d | urgency: %d | stat: %d", data.todo, str_of_space, data.time, data.date, data.month, data.years, data.status, data.mark);
 
